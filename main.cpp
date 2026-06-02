@@ -4,10 +4,39 @@
 #include <string> // for parsing instructions: LOAD, ADD, SUB, STORE, etc.
 using namespace std;
 
+/*
+    Instruction struct represents one instruction in our simulated CPU program.
+    For now, each instruction has:
+    - operation: the instruction name, like LOAD, ADD, SUB, STORE, HALT
+    - arg1: first argument
+    - arg2: second argument
+    - arg3: third argument
+
+    ex: Instruction("ADD", 3, 1, 2) = ADD R3, R1, R2
+*/
+struct Instruction {
+    string operation;
+    int arg1;
+    int arg2;
+    int arg3;
+
+    Instruction(string op, int a1, int a2, int a3) {
+        operation = op;
+        arg1 = a1;
+        arg2 = a2;
+        arg3 = a3;
+    }
+};
+
 class CPU {
 private:
     array<int, 4> registers; // creates the 4 registers (R0, R1, R2, R3)
     array<int, 256> memory; //creates 256 memory spots
+    /*
+        The program counter (PC) keeps track of which instruction
+        the CPU is currently executing.
+    */
+    int programCounter;
 
 public:
 
@@ -18,6 +47,7 @@ public:
     CPU() {
         registers.fill(0);
         memory.fill(0);
+        programCounter = 0; // CPU starts executing from the first instruction
     }
 
 
