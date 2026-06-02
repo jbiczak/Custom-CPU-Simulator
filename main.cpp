@@ -1,5 +1,7 @@
 #include <iostream>
 #include <array>
+#include <vector> // to store lists of instructions as a program in the future
+#include <string> // for parsing instructions: LOAD, ADD, SUB, STORE, etc.
 using namespace std;
 
 class CPU {
