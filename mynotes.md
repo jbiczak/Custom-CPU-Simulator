@@ -80,9 +80,9 @@ Possible hardware outputs:
              v
      -------------------
      |                 |
-        Registers           ALU
+     Registers       ALU
      |                 |
      -------------------
              |
              v
-          Memory
+           Memory
