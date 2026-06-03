@@ -188,30 +188,25 @@ int main() {
     ADD R3, R1, R2
     STORE R3, 100    */
 
-    cpu.load(1, 10); // LOAD R1, 10 --> R1 = 10
-    cpu.load(2, 5);
-    cpu.add(3, 1, 2); // ADD R3, R1, R2 --->
-    /*  R3 = R1 + R2
-        R3 = 10 + 5
-        R3 = 15     */
-    cpu.store(3, 100); // STORE R3, 100 --> Memory[100] = R3 = 15
+    vector<Instruction> program = {
+        Instruction("LOAD", 1, 10, 0),      // LOAD R1, 10
+        Instruction("LOAD", 2, 5, 0),       // LOAD R2, 5
+        Instruction("ADD", 3, 1, 2),        // ADD R3, R1, R2
+        Instruction("STORE", 3, 100, 0),    // STORE R3, 100
 
-    cout << "After ADD program:" << endl;
+        Instruction("SUB", 3, 1, 2),        // SUB R3, R1, R2
+        Instruction("STORE", 3, 101, 0),    // STORE R3, 101
+
+        Instruction("HALT", 0, 0, 0)        // Stop the program
+    };
+
+    cpu.runProgram(program); //CPU will fetch, decode, and execute each instruction until it hits HALT
+
+    cout << "Final CPU State after program execution:" << endl;
     cpu.printRegisters();
-    cpu.printMemory(100);
-
-    cout << endl;
-
-    /*  Second test:
-    SUB R3, R1, R2
-    STORE R3, 101    */
-
-    cpu.sub(3, 1, 2);
-    cpu.store(3, 101);
-
-    cout << "After SUB program:" << endl;
-    cpu.printRegisters();
-    cpu.printMemory(101);
+    cpu.printMemory(100); // Should show 15 (10 + 5)
+    cpu.printMemory(101); // Should show 5 (10 - 5)
 
     return 0;
+
 }
