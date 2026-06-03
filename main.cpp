@@ -104,6 +104,53 @@ public:
         }
     }
 
+//===================================( RUN PROGRAM )===================================================
+    void runProgram(vector<Instruction> program) {
+    bool running = true;
+    programCounter = 0; // start at the first instruction.
+    while (running && programCounter < program.size()) {
+        /*
+            FETCH:Get the instruction at the current program counter.
+        */
+        Instruction currentInstruction = program[programCounter];
+        cout << "PC = " << programCounter
+             << " | Executing: " << currentInstruction.operation << endl;
+        /*
+            DECODE + EXECUTE---> Look at the operation name and call the correct CPU function
+        */
+        if (currentInstruction.operation == "LOAD") {
+            //Instruction("LOAD", register, value, unused)
+            load(currentInstruction.arg1, currentInstruction.arg2);
+
+        } else if (currentInstruction.operation == "ADD") {
+            //Instruction("ADD", destination, source1, source2)
+            add(currentInstruction.arg1, currentInstruction.arg2, currentInstruction.arg3);
+
+        } else if (currentInstruction.operation == "SUB") {
+            //Instruction("SUB", destination, source1, source2)
+            sub(currentInstruction.arg1, currentInstruction.arg2, currentInstruction.arg3);
+
+        } else if (currentInstruction.operation == "STORE") {
+            // Instruction("STORE", register, memoryAddress, unused)
+            store(currentInstruction.arg1, currentInstruction.arg2);
+
+        } else if (currentInstruction.operation == "HALT") {
+            // HALT: tells the CPU to stop running the program.
+            running = false;
+            cout << "HALT reached. Program stopped." << endl;
+
+        } else {
+            cout << "Unknown instruction: " << currentInstruction.operation << endl;
+            running = false;
+        }
+        //Move to the next instruction. Later, branch/jump instructions can change the PC differently
+        programCounter++;
+        cout << endl;
+    }
+}
+
+//=======================================================================================================
+
     void printRegisters() {
         cout << "Register State:" << endl;
         for (int i = 0; i < 4; i++) {
