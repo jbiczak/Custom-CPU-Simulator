@@ -2,6 +2,7 @@
 #include <array>
 #include <vector> // to store lists of instructions as a program in the future
 #include <string> // for parsing instructions: LOAD, ADD, SUB, STORE, etc.
+#include <sstream> // for parsing instructions from text input
 using namespace std;
 
 /*
@@ -191,7 +192,7 @@ int main() {
 
     SUB R3, R1, R2
     STORE R3, 101
-    
+
     HALT
     */
 
