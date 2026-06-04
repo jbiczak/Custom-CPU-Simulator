@@ -36,9 +36,10 @@ The current simulator can:
 
 ## Current Goals ()
 
-- Add a program counter
-- Implement a fetch-decode-execute cycle
-- Create an instruction format
+- Add a program counter (Completed)
+- Implement a fetch-decode-execute cycle (Completed)
+- Create an instruction format (Completed)
+- Upgrade the simulator so programs can now be written in a simple assembly-style format
 - Add branching instructions
 - Add performance tracking
 - Connect the simulator to STM32 hardware for visualization

@@ -182,11 +182,18 @@ int main() {
     cout << "Running Custom CPU Simulator..." << endl;
     cout << endl;
 
-    /*  Simulated program:
+    /*  the simulated program:
     LOAD R1, 10
     LOAD R2, 5
     ADD R3, R1, R2
-    STORE R3, 100    */
+    STORE R3, 100
+
+
+    SUB R3, R1, R2
+    STORE R3, 101
+    
+    HALT
+    */
 
     vector<Instruction> program = {
         Instruction("LOAD", 1, 10, 0),      // LOAD R1, 10
@@ -206,6 +213,7 @@ int main() {
     cpu.printRegisters();
     cpu.printMemory(100); // Should show 15 (10 + 5)
     cpu.printMemory(101); // Should show 5 (10 - 5)
+
 
     return 0;
 
