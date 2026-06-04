@@ -27,6 +27,10 @@ struct Instruction {
         arg2 = a2;
         arg3 = a3;
     }
+
+int parseRegister(string regText) {
+    return regText[1] - '0'; // This converts 'R1' to 1, 'R2' to 2, etc
+}
 };
 
 class CPU {
