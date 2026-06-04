@@ -86,3 +86,14 @@ Possible hardware outputs:
              |
              v
            Memory
+
+## Working on ...
+
+Adding the following functions:
+
+parseRegister()
+parseInstruction()
+parseProgram()
+assemblyProgram vector
+
+So the simulator can support a simple assembly-style program format
