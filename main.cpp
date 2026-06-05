@@ -27,10 +27,65 @@ struct Instruction {
         arg2 = a2;
         arg3 = a3;
     }
-
+//====================================( PARSE REGISTER )===================================================
 int parseRegister(string regText) {
     return regText[1] - '0'; // This converts 'R1' to 1, 'R2' to 2, etc
 }
+//====================================( PARSE INSTRUCTION )===================================================
+Instruction parseInstruction(string line) { // Converts one assembly-style text instruction into an Instruction object.
+    stringstream ss(line);                  // ADD R3, R1, R2  --> Instruction("ADD", 3, 1, 2)
+    string operation;
+    ss >> operation;
+
+    if (operation == "LOAD") {
+        string regText;
+        int value;
+        ss >> regText >> value;
+        int reg = parseRegister(regText);
+        return Instruction("LOAD", reg, value, 0);
+    }
+
+    else if (operation == "ADD") {
+        string destText, src1Text, src2Text;
+        ss >> destText >> src1Text >> src2Text;
+        int dest = parseRegister(destText);
+        int src1 = parseRegister(src1Text);
+        int src2 = parseRegister(src2Text);
+        return Instruction("ADD", dest, src1, src2);
+    }
+    else if (operation == "SUB") {
+        string destText, src1Text, src2Text;
+
+        ss >> destText >> src1Text >> src2Text;
+        int dest = parseRegister(destText);
+        int src1 = parseRegister(src1Text);
+        int src2 = parseRegister(src2Text);
+        return Instruction("SUB", dest, src1, src2);
+    }
+    else if (operation == "STORE") {
+        string regText;
+        int address;
+        ss >> regText >> address;
+        int reg = parseRegister(regText);
+        return Instruction("STORE", reg, address, 0);
+    }
+    else if (operation == "HALT") {
+        return Instruction("HALT", 0, 0, 0);
+    }
+    else {
+        cout << "Parser error: unknown instruction " << operation << endl;
+        return Instruction("HALT", 0, 0, 0);
+    }
+}
+//====================================( PARSE PROGRAM )===================================================
+vector<Instruction> parseProgram(vector<string> assemblyProgram) {
+    vector<Instruction> program;
+    for (string line : assemblyProgram) {
+        program.push_back(parseInstruction(line));
+    }
+    return program;
+}
+
 };
 
 class CPU {
