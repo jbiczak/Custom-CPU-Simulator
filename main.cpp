@@ -27,6 +27,7 @@ struct Instruction {
         arg2 = a2;
         arg3 = a3;
     }
+};
 //====================================( PARSE REGISTER )===================================================
 int parseRegister(string regText) {
     return regText[1] - '0'; // This converts 'R1' to 1, 'R2' to 2, etc
@@ -85,8 +86,6 @@ vector<Instruction> parseProgram(vector<string> assemblyProgram) {
     }
     return program;
 }
-
-};
 
 class CPU {
 private:
@@ -253,7 +252,7 @@ int main() {
 
     HALT
     */
-
+/*================================( PREVIOUS INSTRUCTION-OBJECT PROGRAM )===================================================
     vector<Instruction> program = {
         Instruction("LOAD", 1, 10, 0),      // LOAD R1, 10
         Instruction("LOAD", 2, 5, 0),       // LOAD R2, 5
@@ -265,7 +264,23 @@ int main() {
 
         Instruction("HALT", 0, 0, 0)        // Stop the program
     };
+*/
+//===============================( ASSEMBLY-STYLE PROGRAM )===================================================
+    vector<string> assemblyProgram = {
+        "LOAD R1, 10",
+        "LOAD R2, 5",
+        "ADD R3, R1, R2",
+        "STORE R3, 100",
 
+        "SUB R3, R1, R2",
+        "STORE R3, 101",
+
+        "HALT"
+    };
+    vector<Instruction> program = parseProgram(assemblyProgram); // Convert the assembly-style text instructions into Instruction objects
+    
+    
+    
     cpu.runProgram(program); //CPU will fetch, decode, and execute each instruction until it hits HALT
 
     cout << "Final CPU State after program execution:" << endl;
