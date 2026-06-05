@@ -1,13 +1,13 @@
 #include <iostream>
 #include <array>
-#include <vector> // to store lists of instructions as a program in the future
+#include <vector> // to store lists of instructions as a program
 #include <string> // for parsing instructions: LOAD, ADD, SUB, STORE, etc.
 #include <sstream> // for parsing instructions from text input
 using namespace std;
 
 /*
-    Instruction struct represents one instruction in our simulated CPU program.
-    For now, each instruction has:
+    Instruction struct represents one instruction in simulated CPU program.
+    Each instruction has:
     - operation: the instruction name, like LOAD, ADD, SUB, STORE, HALT
     - arg1: first argument
     - arg2: second argument
@@ -101,7 +101,7 @@ private:
 public:
 
     /* Constructor:
-    This runs automatically when we create a CPU object in main().
+    This runs automatically when create a CPU object in main().
     It initializes all registers and memory locations to 0,
     which gives the CPU a clean starting state.  */
     CPU() {
@@ -208,7 +208,6 @@ public:
         cout << endl;
     }
 }
-
 //=======================================================================================================
 
     void printRegisters() {
@@ -235,7 +234,7 @@ private:
         return address >= 0 && address < 256;
     }
 };
-
+//====================================( MAIN FUNCTION )===================================================
 int main() {
     CPU cpu;
 
