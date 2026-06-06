@@ -227,6 +227,18 @@ public:
             programCounter = currentInstruction.arg1; // Sets the program counter to the target address to jump to that instruction.
             continue; // Skip the normal PC increment since we already set it to the jump target (standard behavior for a jump instruction)
 
+        } else if (currentInstruction.operation == "BEQ") {
+            // Instruction("BEQ", register1, register2, targetAddress)
+            if (registers[currentInstruction.arg1] == registers[currentInstruction.arg2]) {
+                programCounter = currentInstruction.arg3;
+                continue;
+            }
+        } else if (currentInstruction.operation == "BNE") {
+            // Instruction("BNE", register1, register2, targetAddress)
+            if (registers[currentInstruction.arg1] != registers[currentInstruction.arg2]) {
+                programCounter = currentInstruction.arg3;
+                continue;
+            }
         } else if (currentInstruction.operation == "HALT") {
             // HALT: tells the CPU to stop running the program.
             running = false;
