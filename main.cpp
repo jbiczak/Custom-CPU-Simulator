@@ -75,7 +75,7 @@ Instruction parseInstruction(string line) { // Converts one assembly-style text 
     }
     else {
         cout << "Parser error: unknown instruction " << operation << endl;
-        return Instruction("HALT", 0, 0, 0);
+        return Instruction("HALT", 0, 0, 0); // If we encounter an unknown instruction, we return a HALT to stop the program.
     }
 }
 //====================================( PARSE PROGRAM )===================================================
@@ -85,6 +85,8 @@ vector<Instruction> parseProgram(vector<string> assemblyProgram) {
         program.push_back(parseInstruction(line));
     }
     return program;
+// this is to convert a list of text instructions (assemblyProgram) into a list of Instruction objects that the CPU can execute.
+// Each line of text is parsed into an Instruction using the parseInstruction function, and then added to the program vector.
 }
 
 class CPU {
@@ -109,7 +111,9 @@ public:
         programCounter = 0; // CPU starts executing from the first instruction
     }
 
-
+//===================================( CPU INSTRUCTION IMPLEMENTATIONS )===================================================
+// This can be thought of as the ALU and control unit of the CPU, where we define how 
+// each instruction works and how it manipulates data in registers and memory.
 
     /* LOAD instruction:
     Places an immediate value directly into a register.
@@ -232,6 +236,9 @@ private:
     bool isValidMemoryAddress(int address) {
         return address >= 0 && address < 256;
     }
+
+// These values may be changed in the future if we want to add more registers or memory
+
 };
 //====================================( MAIN FUNCTION )===================================================
 int main() {
@@ -265,7 +272,7 @@ int main() {
         Instruction("HALT", 0, 0, 0)        // Stop the program
     };
 */
-//===============================( ASSEMBLY-STYLE PROGRAM )===================================================
+//===============================( NEW ASSEMBLY-STYLE PROGRAM )===================================================
     vector<string> assemblyProgram = {
         "LOAD R1, 10",
         "LOAD R2, 5",
