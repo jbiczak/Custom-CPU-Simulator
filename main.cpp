@@ -301,7 +301,7 @@ int main() {
 
     HALT
     */
-/*================================( PREVIOUS INSTRUCTION-OBJECT PROGRAM )===================================================
+/*================================( PREVIOUS INSTRUCTION-OBJECT PROGRAM 1 )===================================================
     vector<Instruction> program = {
         Instruction("LOAD", 1, 10, 0),      // LOAD R1, 10
         Instruction("LOAD", 2, 5, 0),       // LOAD R2, 5
@@ -314,7 +314,7 @@ int main() {
         Instruction("HALT", 0, 0, 0)        // Stop the program
     };
 */
-//===============================( NEW ASSEMBLY-STYLE PROGRAM )===================================================
+/*===============================( PREVIOUS ASSEMBLY-STYLE PROGRAM 2 )===================================================
     vector<string> assemblyProgram = {
         "LOAD R1, 10",
         "LOAD R2, 5",
@@ -326,6 +326,20 @@ int main() {
 
         "HALT"
     };
+*/
+//====================================( NEW ASSEMBLY-STYLE PROGRAM WITH BRANCHING )===================================================
+    vector<string> assemblyProgram = {
+    "LOAD R1 0",       // R1 = counter, starts at 0
+    "LOAD R2 1",       // R2 = increment value
+    "LOAD R3 5",       // R3 = target value
+
+    "ADD R1 R1 R2",    // R1 = R1 + 1
+    "BNE R1 R3 3",     // if R1 != R3, jump back to instruction 3
+
+    "STORE R1 120",    // store final counter value into memory
+    "HALT"
+};
+
     vector<Instruction> program = parseProgram(assemblyProgram); // Convert the assembly-style text instructions into Instruction objects
     
     
@@ -333,9 +347,8 @@ int main() {
     cpu.runProgram(program); //CPU will fetch, decode, and execute each instruction until it hits HALT
 
     cout << "Final CPU State after program execution:" << endl;
-    cpu.printRegisters();
-    cpu.printMemory(100); // Should show 15 (10 + 5)
-    cpu.printMemory(101); // Should show 5 (10 - 5)
+    cpu.printRegisters(); ///prints the final values of all registers after the program finishes running
+    cpu.printMemory(120); //should show 5, which is the final value of the counter after the loop finishes
 
 
     return 0;
