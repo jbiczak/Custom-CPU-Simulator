@@ -70,6 +70,11 @@ Instruction parseInstruction(string line) { // Converts one assembly-style text 
         int reg = parseRegister(regText);
         return Instruction("STORE", reg, address, 0);
     }
+    else if (operation == "JMP") {
+        int targetAddress;
+        ss >> targetAddress;
+        return Instruction("JMP", targetAddress, 0, 0);
+    }
     else if (operation == "HALT") {
         return Instruction("HALT", 0, 0, 0);
     }
@@ -196,6 +201,11 @@ public:
         } else if (currentInstruction.operation == "STORE") {
             // Instruction("STORE", register, memoryAddress, unused)
             store(currentInstruction.arg1, currentInstruction.arg2);
+
+        } else if (currentInstruction.operation == "JMP") {
+            // Instruction("JMP", targetAddress, unused, unused)
+            programCounter = currentInstruction.arg1; // Sets the program counter to the target address to jump to that instruction.
+            continue; // Skip the normal PC increment since we already set it to the jump target (standard behavior for a jump instruction)
 
         } else if (currentInstruction.operation == "HALT") {
             // HALT: tells the CPU to stop running the program.
