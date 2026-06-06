@@ -89,11 +89,9 @@ Possible hardware outputs:
 
 ## Working on ...
 
-Adding the following functions:
+Adding control flow to the simulator
+This would allow for assembly-style programs to use jumps and condition branches
 
-parseRegister()
-parseInstruction()
-parseProgram()
-assemblyProgram vector
-
-So the simulator can support a simple assembly-style program format
+JMP
+BEQ
+BNE

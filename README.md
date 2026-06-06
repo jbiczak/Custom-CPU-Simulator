@@ -33,13 +33,14 @@ The current simulator can:
 - Subtract two register values
 - Store register values into memory
 - Print register and memory states
+- + the goals marked as "Completed" below
 
 ## Current Goals ()
 
 - Add a program counter (Completed)
 - Implement a fetch-decode-execute cycle (Completed)
 - Create an instruction format (Completed)
-- Upgrade the simulator so programs can now be written in a simple assembly-style format
-- Add branching instructions
+- Upgrade the simulator so programs can now be written in a simple assembly-style format (Completed)
+- Add branching instructions (Currently working on...)
 - Add performance tracking
 - Connect the simulator to STM32 hardware for visualization
