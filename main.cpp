@@ -75,6 +75,26 @@ Instruction parseInstruction(string line) { // Converts one assembly-style text 
         ss >> targetAddress;
         return Instruction("JMP", targetAddress, 0, 0);
     }
+//=================================( NEW CONDITIONAL INSTRUCTIONS )===================================================
+    else if (operation == "BEQ") {
+        string reg1Text, reg2Text;
+        int targetAddress;
+        ss >> reg1Text >> reg2Text >> targetAddress;
+        int reg1 = parseRegister(reg1Text);
+        int reg2 = parseRegister(reg2Text);
+        return Instruction("BEQ", reg1, reg2, targetAddress);
+    }
+
+     else if (operation == "BNE") {
+        string reg1Text, reg2Text;
+        int targetAddress;
+        ss >> reg1Text >> reg2Text >> targetAddress;
+        int reg1 = parseRegister(reg1Text);
+        int reg2 = parseRegister(reg2Text);
+        return Instruction("BNE", reg1, reg2, targetAddress);
+    }
+//====================================================================================================================
+
     else if (operation == "HALT") {
         return Instruction("HALT", 0, 0, 0);
     }
