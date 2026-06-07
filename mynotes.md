@@ -89,9 +89,14 @@ Possible hardware outputs:
 
 ## Working on ...
 
-Adding control flow to the simulator
-This would allow for assembly-style programs to use jumps and condition branches
+Adding performance tracking to the CPU simulator
+We can now say we built a CPU simulator and used it to analyze processor behavior
+We can add counters for:
+- Instructions executed
+- Clock cycles
+- ALU operations
+- Memory operations
+- Branch instructions
+- Branches taken
 
-JMP
-BEQ
-BNE
+Then print a report at the end.
