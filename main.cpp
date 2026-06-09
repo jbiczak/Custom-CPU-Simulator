@@ -85,7 +85,7 @@ Instruction parseInstruction(string line) { // Converts one assembly-style text 
         return Instruction("BEQ", reg1, reg2, targetAddress);
     }
 
-     else if (operation == "BNE") {
+    else if (operation == "BNE") {
         string reg1Text, reg2Text;
         int targetAddress;
         ss >> reg1Text >> reg2Text >> targetAddress;
@@ -124,6 +124,14 @@ private:
     */
     int programCounter;
 
+    // Performance metrics
+    int instructionsExecuted;
+    int cycleCount;
+    int aluOperations;
+    int memoryOperations;
+    int branchInstructions;
+    int branchesTaken;
+
 public:
 
     /* Constructor:
@@ -134,6 +142,14 @@ public:
         registers.fill(0);
         memory.fill(0);
         programCounter = 0; // CPU starts executing from the first instruction
+
+        // Initialize performance metrics to 0
+        instructionsExecuted = 0;
+        cycleCount = 0;
+        aluOperations = 0;
+        memoryOperations = 0;
+        branchInstructions = 0;
+        branchesTaken = 0;
     }
 
 //===================================( CPU INSTRUCTION IMPLEMENTATIONS )===================================================
@@ -182,7 +198,7 @@ public:
             cout << "Invalid register used in SUB instruction" << endl;
         }
     }
-    // STORE instruction:
+     // STORE instruction:
     // Copies the value from a register into a memory location.
     void store(int reg, int address) {
         if (isValidRegister(reg) && isValidMemoryAddress(address)) {
