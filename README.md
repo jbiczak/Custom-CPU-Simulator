@@ -42,5 +42,6 @@ The current simulator can:
 - Create an instruction format (Completed)
 - Upgrade the simulator so programs can now be written in a simple assembly-style format (Completed)
 - Add branching instructions (Completed)
-- Add performance tracking (Currently working on ...)
+- Add performance tracking (Completed)
+- Create an external .asm file loader: read programs from disk, ignore blank lines/comments, programs/ folder structure (Currently working on...)
 - Connect the simulator to STM32 hardware for visualization

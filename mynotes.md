@@ -89,14 +89,8 @@ Possible hardware outputs:
 
 ## Working on ...
 
-Adding performance tracking to the CPU simulator
-We can now say we built a CPU simulator and used it to analyze processor behavior
-We can add counters for:
-- Instructions executed
-- Clock cycles
-- ALU operations
-- Memory operations
-- Branch instructions
-- Branches taken
+Creating an external .asm file loader
 
-Then print a report at the end.
+- We so far have been using the main() function to put our assembly code into the CPU program.
+- We want to be able to have .asm files to be read, allowing for more realistic user input.
+- Will need parser robustness
