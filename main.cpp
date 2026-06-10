@@ -220,6 +220,13 @@ public:
         cout << "PC = " << programCounter
              << " | Executing: " << currentInstruction.operation << endl;
         instructionsExecuted++;
+        if (currentInstruction.operation == "LOAD" || currentInstruction.operation == "STORE") {
+            cycleCount += 2; // Memory operations take more cycles
+        } else if (currentInstruction.operation == "JMP" || currentInstruction.operation == "BEQ" || currentInstruction.operation == "BNE") {
+            cycleCount += 3; // Branch instructions are slower due to potential pipeline flushes in real CPUs
+        } else {
+            cycleCount += 1; // Default cycle count for other instructions
+        }
         /*
             DECODE + EXECUTE---> Look at the operation name and call the correct CPU function
         */
