@@ -219,39 +219,50 @@ public:
         Instruction currentInstruction = program[programCounter];
         cout << "PC = " << programCounter
              << " | Executing: " << currentInstruction.operation << endl;
+        instructionsExecuted++;
         /*
             DECODE + EXECUTE---> Look at the operation name and call the correct CPU function
         */
         if (currentInstruction.operation == "LOAD") {
             //Instruction("LOAD", register, value, unused)
             load(currentInstruction.arg1, currentInstruction.arg2);
+            memoryOperations++;
 
         } else if (currentInstruction.operation == "ADD") {
             //Instruction("ADD", destination, source1, source2)
             add(currentInstruction.arg1, currentInstruction.arg2, currentInstruction.arg3);
+            aluOperations++;
 
         } else if (currentInstruction.operation == "SUB") {
             //Instruction("SUB", destination, source1, source2)
             sub(currentInstruction.arg1, currentInstruction.arg2, currentInstruction.arg3);
+            aluOperations++;
 
         } else if (currentInstruction.operation == "STORE") {
             // Instruction("STORE", register, memoryAddress, unused)
             store(currentInstruction.arg1, currentInstruction.arg2);
+            memoryOperations++;
 
         } else if (currentInstruction.operation == "JMP") {
             // Instruction("JMP", targetAddress, unused, unused)
+            branchInstructions++;
+            branchesTaken++;
             programCounter = currentInstruction.arg1; // Sets the program counter to the target address to jump to that instruction.
             continue; // Skip the normal PC increment since we already set it to the jump target (standard behavior for a jump instruction)
 
         } else if (currentInstruction.operation == "BEQ") {
             // Instruction("BEQ", register1, register2, targetAddress)
+            branchInstructions++;
             if (registers[currentInstruction.arg1] == registers[currentInstruction.arg2]) {
+                branchesTaken++;
                 programCounter = currentInstruction.arg3;
                 continue;
             }
         } else if (currentInstruction.operation == "BNE") {
             // Instruction("BNE", register1, register2, targetAddress)
+            branchInstructions++;
             if (registers[currentInstruction.arg1] != registers[currentInstruction.arg2]) {
+                branchesTaken++;
                 programCounter = currentInstruction.arg3;
                 continue;
             }
