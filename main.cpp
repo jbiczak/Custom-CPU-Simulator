@@ -3,6 +3,7 @@
 #include <vector> // to store lists of instructions as a program
 #include <string> // for parsing instructions: LOAD, ADD, SUB, STORE, etc.
 #include <sstream> // for parsing instructions from text input
+#include <iomanip> // for formatting the performance report output
 using namespace std;
 
 /*
@@ -304,6 +305,23 @@ public:
         }
     }
 
+    void printPerformanceReport() {
+        cout << "CPU Performance Report:" << endl;
+        cout << "-----------------------" << endl;
+        cout << "Instructions Executed: " << instructionsExecuted << endl;
+        cout << "Total Cycles         : " << cycleCount << endl;
+        cout << "ALU Operations       : " << aluOperations << endl;
+        cout << "Memory Operations    : " << memoryOperations << endl;
+        cout << "Branch Instructions  : " << branchInstructions << endl;
+        cout << "Branches Taken       : " << branchesTaken << endl;
+
+        if(instructionsExecuted > 0) {
+            double cpi = (double)cycleCount / instructionsExecuted;
+            cout << "Cycles Per Instruction (CPI): " << fixed << setprecision(2) << cpi << endl;
+        }
+        cout << "-----------------------" << endl;
+    }
+
 private:
     bool isValidRegister(int reg) {
         return reg >= 0 && reg < 4;
@@ -383,7 +401,7 @@ int main() {
     cout << "Final CPU State after program execution:" << endl;
     cpu.printRegisters(); ///prints the final values of all registers after the program finishes running
     cpu.printMemory(120); //should show 5, which is the final value of the counter after the loop finishes
-
+    cpu.printPerformanceReport(); //prints the performance metrics collected during execution, such as total instructions executed, cycle count, ALU operations, memory operations, branch instructions, and branches taken.
 
     return 0;
 
