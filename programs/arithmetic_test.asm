@@ -1,4 +1,4 @@
-asm; arithmetic_test.asm
+; arithmetic_test.asm
 ; Basic arithmetic: loads two values, adds and subtracts them
 
 LOAD R1 10

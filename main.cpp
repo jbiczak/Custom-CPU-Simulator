@@ -450,6 +450,8 @@ int main() {
     cout << "Final CPU State after program execution:" << endl;
     cpu.printRegisters(); ///prints the final values of all registers after the program finishes running
     cpu.printMemory(120); //should show 5, which is the final value of the counter after the loop finishes
+    //cpu.printMemory(100); //should show 15, which is the result of adding 10 and 5
+    //cpu.printMemory(101); //should show 5, which is the result of subtract
     cpu.printPerformanceReport(); //prints the performance metrics collected during execution, such as total instructions executed, cycle count, ALU operations, memory operations, branch instructions, and branches taken.
 
     return 0;
