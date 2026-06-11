@@ -4,6 +4,7 @@
 #include <string> // for parsing instructions: LOAD, ADD, SUB, STORE, etc.
 #include <sstream> // for parsing instructions from text input
 #include <iomanip> // for formatting the performance report output
+#include <fstream> // for file input/output if we want to load programs from .asm files
 using namespace std;
 
 /*
@@ -114,6 +115,25 @@ vector<Instruction> parseProgram(vector<string> assemblyProgram) {
 // this is to convert a list of text instructions (assemblyProgram) into a list of Instruction objects that the CPU can execute.
 // Each line of text is parsed into an Instruction using the parseInstruction function, and then added to the program vector.
 }
+
+vector<string> loadProgramFromFile(string filename) {
+    vector<string> lines;
+    ifstream file(filename);
+
+    if (!file.is_open()) {
+        cout << "Error: Could not open file " << filename << endl;
+        return lines; //return empty vector if file not found
+    }
+
+    string line;
+    while (getline(file, line)) {
+        lines.push_back(line);
+    }
+    file.close();
+    cout << "Program loaded from " << filename << " with " << lines.size() << " instructions." << endl;
+    return lines;
+}
+
 
 class CPU {
 private:
@@ -379,7 +399,7 @@ int main() {
         "HALT"
     };
 */
-//====================================( NEW ASSEMBLY-STYLE PROGRAM WITH BRANCHING )===================================================
+/*====================================( PREVIOUS ASSEMBLY-STYLE PROGRAM WITH BRANCHING )===================================================
     vector<string> assemblyProgram = {
     "LOAD R1 0",       // R1 = counter, starts at 0
     "LOAD R2 1",       // R2 = increment value
@@ -393,8 +413,11 @@ int main() {
 };
 
     vector<Instruction> program = parseProgram(assemblyProgram); // Convert the assembly-style text instructions into Instruction objects
-    
-    
+======================================================================================================================*/    
+
+//====================================( NEW PROGRAM LOADED FROM FILE )===================================================
+    vector<string> assemblyProgram = loadProgramFromFile("programs/loop_test.asm"); // Load the program
+    vector<Instruction> program = parseProgram(assemblyProgram); // Now parse the loaded program into Instruction objects
     
     cpu.runProgram(program); //CPU will fetch, decode, and execute each instruction until it hits HALT
 
