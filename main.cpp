@@ -105,7 +105,7 @@ Instruction parseInstruction(string line) { // Converts one assembly-style text 
         return Instruction("HALT", 0, 0, 0); // If we encounter an unknown instruction, we return a HALT to stop the program.
     }
 }
-//====================================( PARSE PROGRAM )===================================================
+/*====================================( PREVIOUS PARSE PROGRAM )===================================================
 vector<Instruction> parseProgram(vector<string> assemblyProgram) {
     vector<Instruction> program;
     for (string line : assemblyProgram) {
@@ -114,6 +114,32 @@ vector<Instruction> parseProgram(vector<string> assemblyProgram) {
     return program;
 // this is to convert a list of text instructions (assemblyProgram) into a list of Instruction objects that the CPU can execute.
 // Each line of text is parsed into an Instruction using the parseInstruction function, and then added to the program vector.
+}
+*/
+
+//====================================( NEW PARSE PROGRAM WITH FILE LOADING )===================================================
+vector<Instruction> parseProgram(vector<string> assemblyProgram) {
+    vector<Instruction> program;
+
+    for (string line : assemblyProgram) {
+
+        // Strip leading and trailing whitespace
+        size_t start = line.find_first_not_of(" \t\r\n");
+        if (start == string::npos) continue;  // blank line, skip it
+        line = line.substr(start);
+
+        // Skip comment lines (lines starting with ;)
+        if (line[0] == ';') continue;
+
+        // Strip inline comments (everything after a ; on a code line)
+        size_t commentPos = line.find(';');
+        if (commentPos != string::npos) {
+            line = line.substr(0, commentPos);
+        }
+
+        program.push_back(parseInstruction(line));
+    }
+    return program;
 }
 
 vector<string> loadProgramFromFile(string filename) {
