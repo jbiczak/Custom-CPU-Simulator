@@ -5,6 +5,7 @@
 #include <sstream> // for parsing instructions from text input
 #include <iomanip> // for formatting the performance report output
 #include <fstream> // for file input/output if we want to load programs from .asm files
+#include <map> // for mapping instruction names to function pointers
 using namespace std;
 
 /*
@@ -141,6 +142,44 @@ vector<Instruction> parseProgram(vector<string> assemblyProgram) {
     }
     return program;
 }
+//====================================( SCAN LABELS )===================================================
+vector<string> scanLabels(vector<string> rawLines, map<string, int>& labelMap) {
+    vector<string> cleanedLines;
+
+    for (string line : rawLines) {
+
+        // Strip leading/trailing whitespace (same logic as parseProgram)
+        size_t start = line.find_first_not_of(" \t\r\n");
+        if (start == string::npos) continue;  // blank line, skip
+        line = line.substr(start);
+
+        // Skip full-line comments
+        if (line[0] == ';') continue;
+
+        // Strip inline comments
+        size_t commentPos = line.find(';');
+        if (commentPos != string::npos) {
+            line = line.substr(0, commentPos);
+            // Re-check: stripping the comment might leave only whitespace
+            start = line.find_first_not_of(" \t\r\n");
+            if (start == string::npos) continue;
+            line = line.substr(start);
+        }
+
+        // Check if this line is a label definition (ends with ':')
+        size_t colonPos = line.find(':');
+        if (colonPos != string::npos) {
+            string labelName = line.substr(0, colonPos);
+            labelMap[labelName] = cleanedLines.size(); // points to the NEXT instruction
+            continue; // label lines are not instructions, don't add to output
+        }
+
+        cleanedLines.push_back(line);
+    }
+
+    return cleanedLines;
+}
+
 
 vector<string> loadProgramFromFile(string filename) {
     vector<string> lines;
@@ -453,6 +492,21 @@ int main() {
     //cpu.printMemory(100); //should show 15, which is the result of adding 10 and 5
     //cpu.printMemory(101); //should show 5, which is the result of subtract
     cpu.printPerformanceReport(); //prints the performance metrics collected during execution, such as total instructions executed, cycle count, ALU operations, memory operations, branch instructions, and branches taken.
+
+    map<string, int> labelMap;
+    vector<string> rawLines = loadProgramFromFile("programs/loop_test.asm");
+    vector<string> cleaned = scanLabels(rawLines, labelMap);
+
+    cout << "Label map contents:" << endl;
+    for (auto& pair : labelMap) {
+        cout << "  " << pair.first << " -> " << pair.second << endl;
+    }
+
+    cout << "Cleaned lines:" << endl;
+    for (string line : cleaned) {
+        cout << "  " << line << endl;
+    }
+
 
     return 0;
 
