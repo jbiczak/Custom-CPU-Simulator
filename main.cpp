@@ -118,30 +118,7 @@ vector<Instruction> parseProgram(vector<string> assemblyProgram) {
 }
 */
 
-//====================================( NEW PARSE PROGRAM WITH FILE LOADING )===================================================
-vector<Instruction> parseProgram(vector<string> assemblyProgram) {
-    vector<Instruction> program;
 
-    for (string line : assemblyProgram) {
-
-        // Strip leading and trailing whitespace
-        size_t start = line.find_first_not_of(" \t\r\n");
-        if (start == string::npos) continue;  // blank line, skip it
-        line = line.substr(start);
-
-        // Skip comment lines (lines starting with ;)
-        if (line[0] == ';') continue;
-
-        // Strip inline comments (everything after a ; on a code line)
-        size_t commentPos = line.find(';');
-        if (commentPos != string::npos) {
-            line = line.substr(0, commentPos);
-        }
-
-        program.push_back(parseInstruction(line));
-    }
-    return program;
-}
 //====================================( SCAN LABELS )===================================================
 vector<string> scanLabels(vector<string> rawLines, map<string, int>& labelMap) {
     vector<string> cleanedLines;
@@ -179,6 +156,59 @@ vector<string> scanLabels(vector<string> rawLines, map<string, int>& labelMap) {
 
     return cleanedLines;
 }
+
+//====================================( RESOLVE LABELS )===================================================
+vector<string> resolveLabels(vector<string> cleanedLines, map<string, int>& labelMap) {
+    vector<string> resolvedLines;
+
+    for (string line : cleanedLines) {
+        stringstream ss(line);
+        string operation;
+        ss >> operation;
+
+        if (operation == "JMP" || operation == "BEQ" || operation == "BNE") {
+            // Read the remaining tokens on this line
+            vector<string> tokens;
+            string token;
+            while (ss >> token) {
+                tokens.push_back(token);
+            }
+
+            // The last token is the branch target — check if it's a label
+            string& target = tokens.back();
+            if (labelMap.count(target) > 0) {
+                target = to_string(labelMap[target]); // replace label name with its index
+            }
+
+            // Rebuild the line: operation + all tokens
+            string rebuilt = operation;
+            for (string t : tokens) {
+                rebuilt += " " + t;
+            }
+            resolvedLines.push_back(rebuilt);
+
+        } else {
+            resolvedLines.push_back(line); // non-branch lines pass through unchanged
+        }
+    }
+
+    return resolvedLines;
+}
+
+//====================================( NEW PARSE PROGRAM WITH FILE LOADING )===================================================
+vector<Instruction> parseProgram(vector<string> assemblyProgram) {
+    map<string, int> labelMap;
+
+    vector<string> cleanedLines = scanLabels(assemblyProgram, labelMap);
+    vector<string> resolvedLines = resolveLabels(cleanedLines, labelMap);
+
+    vector<Instruction> program;
+    for (string line : resolvedLines) {
+        program.push_back(parseInstruction(line));
+    }
+    return program;
+}
+
 
 
 vector<string> loadProgramFromFile(string filename) {
