@@ -89,8 +89,12 @@ Possible hardware outputs:
 
 ## Working on ...
 
-Creating an external .asm file loader
-
-- We so far have been using the main() function to put our assembly code into the CPU program.
-- We want to be able to have .asm files to be read, allowing for more realistic user input.
-- Will need parser robustness
+Grow the simulator's ISA so it can express more realistic programs
+Planned additions:
+- ADDI/SUBI
+- MOV
+- CMP
+- NOP
+- AND/OR/XOR
+- Later/optional: MUL, DIV, SHL, SHR
+Each new instruction follows the same pattern already established: add a case to parseInstruction(), add the CPU method, add a case in runProgram()'s decode/execute block, and update the cycle-cost model and performance counters to classify it correctly (ALU vs. memory vs. control).

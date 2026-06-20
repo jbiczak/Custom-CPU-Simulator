@@ -43,5 +43,6 @@ The current simulator can:
 - Upgrade the simulator so programs can now be written in a simple assembly-style format (Completed)
 - Add branching instructions (Completed)
 - Add performance tracking (Completed)
-- Create an external .asm file loader: read programs from disk, ignore blank lines/comments, programs/ folder structure (Currently working on...)
+- Create an external .asm file loader: read programs from disk, ignore blank lines/comments, programs/ folder structure (Completed)
+- Expanded instructions support: ADDI, SUBI, MUL, MOV, CMP, etc; later AND/OR/XOR/SHL/SHR (Currently working on...)
 - Connect the simulator to STM32 hardware for visualization
