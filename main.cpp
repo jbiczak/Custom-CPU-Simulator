@@ -57,6 +57,15 @@ Instruction parseInstruction(string line) { // Converts one assembly-style text 
         int src2 = parseRegister(src2Text);
         return Instruction("ADD", dest, src1, src2);
     }
+
+    else if (operation == "ADDI") {
+        string regText;
+        int value;
+        ss >> regText >> value;
+        int reg = parseRegister(regText);
+        return Instruction("ADDI", reg, value, 0);
+    }
+
     else if (operation == "SUB") {
         string destText, src1Text, src2Text;
 
@@ -66,6 +75,15 @@ Instruction parseInstruction(string line) { // Converts one assembly-style text 
         int src2 = parseRegister(src2Text);
         return Instruction("SUB", dest, src1, src2);
     }
+
+    else if (operation == "SUBI") {
+        string regText;
+        int value;
+        ss >> regText >> value;
+        int reg = parseRegister(regText);
+        return Instruction("SUBI", reg, value, 0);
+    }
+
     else if (operation == "STORE") {
         string regText;
         int address;
@@ -300,6 +318,15 @@ public:
             cout << "Invalid register used in ADD instruction" << endl;
         }
     }
+//===================================(ADDI INSTRUCTION )===================================================
+    void addi(int reg, int value) {
+        if (isValidRegister(reg)) {
+            registers[reg] = registers[reg] + value;
+        } else {
+            cout << "Invalid register used in ADDI instruction" << endl;
+        }
+    }
+
     /* SUB instruction:
     Subtracts the value in src2 from the value in src1,
     then stores the result in the destination register.
@@ -314,6 +341,15 @@ public:
             cout << "Invalid register used in SUB instruction" << endl;
         }
     }
+//===================================( SUBI INSTRUCTION )===================================================
+    void subi(int reg, int value) {
+    if (isValidRegister(reg)) {
+        registers[reg] = registers[reg] - value;
+    } else {
+        cout << "Invalid register used in SUBI instruction" << endl;
+    }
+}
+
      // STORE instruction:
     // Copies the value from a register into a memory location.
     void store(int reg, int address) {
@@ -336,6 +372,7 @@ public:
         cout << "PC = " << programCounter
              << " | Executing: " << currentInstruction.operation << endl;
         instructionsExecuted++;
+//===================================( CYCLE COUNTING )===================================================
         if (currentInstruction.operation == "LOAD" || currentInstruction.operation == "STORE") {
             cycleCount += 2; // Memory operations take more cycles
         } else if (currentInstruction.operation == "JMP" || currentInstruction.operation == "BEQ" || currentInstruction.operation == "BNE") {
@@ -346,6 +383,7 @@ public:
         /*
             DECODE + EXECUTE---> Look at the operation name and call the correct CPU function
         */
+//===================================( INSTRUCTION EXECUTION COUNT)===================================================
         if (currentInstruction.operation == "LOAD") {
             //Instruction("LOAD", register, value, unused)
             load(currentInstruction.arg1, currentInstruction.arg2);
@@ -355,10 +393,20 @@ public:
             //Instruction("ADD", destination, source1, source2)
             add(currentInstruction.arg1, currentInstruction.arg2, currentInstruction.arg3);
             aluOperations++;
+        
+        } else if (currentInstruction.operation == "ADDI") {
+            // Instruction("ADDI", register, immediateValue, unused)
+            addi(currentInstruction.arg1, currentInstruction.arg2);
+            aluOperations++;
 
         } else if (currentInstruction.operation == "SUB") {
             //Instruction("SUB", destination, source1, source2)
             sub(currentInstruction.arg1, currentInstruction.arg2, currentInstruction.arg3);
+            aluOperations++;
+
+        } else if (currentInstruction.operation == "SUBI") {
+            // Instruction("SUBI", register, immediateValue, unused)
+            subi(currentInstruction.arg1, currentInstruction.arg2);
             aluOperations++;
 
         } else if (currentInstruction.operation == "STORE") {
@@ -456,62 +504,8 @@ int main() {
     cout << "Running Custom CPU Simulator..." << endl;
     cout << endl;
 
-    /*  the simulated program:
-    LOAD R1, 10
-    LOAD R2, 5
-    ADD R3, R1, R2
-    STORE R3, 100
-
-
-    SUB R3, R1, R2
-    STORE R3, 101
-
-    HALT
-    */
-/*================================( PREVIOUS INSTRUCTION-OBJECT PROGRAM 1 )===================================================
-    vector<Instruction> program = {
-        Instruction("LOAD", 1, 10, 0),      // LOAD R1, 10
-        Instruction("LOAD", 2, 5, 0),       // LOAD R2, 5
-        Instruction("ADD", 3, 1, 2),        // ADD R3, R1, R2
-        Instruction("STORE", 3, 100, 0),    // STORE R3, 100
-
-        Instruction("SUB", 3, 1, 2),        // SUB R3, R1, R2
-        Instruction("STORE", 3, 101, 0),    // STORE R3, 101
-
-        Instruction("HALT", 0, 0, 0)        // Stop the program
-    };
-*/
-/*===============================( PREVIOUS ASSEMBLY-STYLE PROGRAM 2 )===================================================
-    vector<string> assemblyProgram = {
-        "LOAD R1, 10",
-        "LOAD R2, 5",
-        "ADD R3, R1, R2",
-        "STORE R3, 100",
-
-        "SUB R3, R1, R2",
-        "STORE R3, 101",
-
-        "HALT"
-    };
-*/
-/*====================================( PREVIOUS ASSEMBLY-STYLE PROGRAM WITH BRANCHING )===================================================
-    vector<string> assemblyProgram = {
-    "LOAD R1 0",       // R1 = counter, starts at 0
-    "LOAD R2 1",       // R2 = increment value
-    "LOAD R3 5",       // R3 = target value
-
-    "ADD R1 R1 R2",    // R1 = R1 + 1
-    "BNE R1 R3 3",     // if R1 != R3, jump back to instruction 3
-
-    "STORE R1 120",    // store final counter value into memory
-    "HALT"
-};
-
-    vector<Instruction> program = parseProgram(assemblyProgram); // Convert the assembly-style text instructions into Instruction objects
-======================================================================================================================*/    
-
 //====================================( NEW PROGRAM LOADED FROM FILE )===================================================
-    vector<string> assemblyProgram = loadProgramFromFile("programs/loop_test.asm"); // Load the program
+    vector<string> assemblyProgram = loadProgramFromFile("programs/addi_test.asm"); // Load the program
     vector<Instruction> program = parseProgram(assemblyProgram); // Now parse the loaded program into Instruction objects
     
     cpu.runProgram(program); //CPU will fetch, decode, and execute each instruction until it hits HALT
@@ -519,12 +513,10 @@ int main() {
     cout << "Final CPU State after program execution:" << endl;
     cpu.printRegisters(); ///prints the final values of all registers after the program finishes running
     cpu.printMemory(120); //should show 5, which is the final value of the counter after the loop finishes
-    //cpu.printMemory(100); //should show 15, which is the result of adding 10 and 5
-    //cpu.printMemory(101); //should show 5, which is the result of subtract
     cpu.printPerformanceReport(); //prints the performance metrics collected during execution, such as total instructions executed, cycle count, ALU operations, memory operations, branch instructions, and branches taken.
 
     map<string, int> labelMap;
-    vector<string> rawLines = loadProgramFromFile("programs/loop_test.asm");
+    vector<string> rawLines = loadProgramFromFile("programs/addi_test.asm");
     vector<string> cleaned = scanLabels(rawLines, labelMap);
 
     cout << "Label map contents:" << endl;
@@ -536,8 +528,5 @@ int main() {
     for (string line : cleaned) {
         cout << "  " << line << endl;
     }
-
-
     return 0;
-
 }
