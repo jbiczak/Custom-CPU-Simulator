@@ -49,6 +49,14 @@ Instruction parseInstruction(string line) { // Converts one assembly-style text 
         return Instruction("LOAD", reg, value, 0);
     }
 
+    else if (operation == "LOADM") {
+        string regText;
+        int address;
+        ss >> regText >> address;
+        int reg = parseRegister(regText);
+        return Instruction("LOADM", reg, address, 0);
+    }
+
     else if (operation == "ADD") {
         string destText, src1Text, src2Text;
         ss >> destText >> src1Text >> src2Text;
@@ -300,6 +308,17 @@ public:
             cout << "Invalid register R" << reg << endl;
         }
     }
+
+    // LOADM instruction:
+    // Loads a value from memory into a register.
+    void loadm(int reg, int address) {
+        if (isValidRegister(reg) && isValidMemoryAddress(address)) {
+            registers[reg] = memory[address];
+        } else {
+            cout << "Invalid register or memory address in LOADM instruction" << endl;
+        }
+    }
+
     /* ADD instruction:
     Adds the values from two source registers and stores the result
     in a destination register.
@@ -381,10 +400,14 @@ public:
 
 //===================================( CYCLE COUNTING )===================================================
         
-if (currentInstruction.operation == "LOAD" || currentInstruction.operation == "STORE") {
+if (currentInstruction.operation == "LOAD" ||
+    currentInstruction.operation == "LOADM" ||
+    currentInstruction.operation == "STORE") {
             cycleCount += 2; // Memory operations take more cycles
+        
         } else if (currentInstruction.operation == "JMP" || currentInstruction.operation == "BEQ" || currentInstruction.operation == "BNE") {
             cycleCount += 3; // Branch instructions are slower due to potential pipeline flushes in real CPUs
+        
         } else {
             cycleCount += 1; // Default cycle count for other instructions
         }
@@ -396,6 +419,11 @@ if (currentInstruction.operation == "LOAD" || currentInstruction.operation == "S
         if (currentInstruction.operation == "LOAD") {
             //Instruction("LOAD", register, value, unused)
             load(currentInstruction.arg1, currentInstruction.arg2);
+            memoryOperations++;
+
+        } else if (currentInstruction.operation == "LOADM") {
+            //Instruction("LOADM", register, memoryAddress, unused)
+            loadm(currentInstruction.arg1, currentInstruction.arg2);
             memoryOperations++;
 
         } else if (currentInstruction.operation == "ADD") {
@@ -519,18 +547,19 @@ int main() {
     cout << endl;
 
 //====================================( NEW PROGRAM LOADED FROM FILE )===================================================
-    vector<string> assemblyProgram = loadProgramFromFile("programs/addi_test.asm"); // Load the program
+    vector<string> assemblyProgram = loadProgramFromFile("programs/memory_test.asm"); // Load the program
     vector<Instruction> program = parseProgram(assemblyProgram); // Now parse the loaded program into Instruction objects
     
     cpu.runProgram(program); //CPU will fetch, decode, and execute each instruction until it hits HALT
 
     cout << "Final CPU State after program execution:" << endl;
     cpu.printRegisters(); ///prints the final values of all registers after the program finishes running
-    cpu.printMemory(120); //should show 5, which is the final value of the counter after the loop finishes
+    cpu.printMemory(100);
+    cpu.printMemory(101);
     cpu.printPerformanceReport(); //prints the performance metrics collected during execution, such as total instructions executed, cycle count, ALU operations, memory operations, branch instructions, and branches taken.
 
     map<string, int> labelMap;
-    vector<string> rawLines = loadProgramFromFile("programs/addi_test.asm");
+    vector<string> rawLines = loadProgramFromFile("programs/memory_test.asm");
     vector<string> cleaned = scanLabels(rawLines, labelMap);
 
     cout << "Label map contents:" << endl;
