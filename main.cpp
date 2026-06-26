@@ -91,6 +91,15 @@ Instruction parseInstruction(string line) { // Converts one assembly-style text 
         int reg = parseRegister(regText);
         return Instruction("STORE", reg, address, 0);
     }
+
+    else if (operation == "MOV") {
+        string destText, srcText;
+        ss >> destText >> srcText;
+        int dest = parseRegister(destText);
+        int src = parseRegister(srcText);
+        return Instruction("MOV", dest, src, 0);
+    }
+
     else if (operation == "JMP") {
         int targetAddress;
         ss >> targetAddress;
@@ -124,19 +133,6 @@ Instruction parseInstruction(string line) { // Converts one assembly-style text 
         return Instruction("HALT", 0, 0, 0); // If we encounter an unknown instruction, we return a HALT to stop the program.
     }
 }
-/*====================================( PREVIOUS PARSE PROGRAM )===================================================
-vector<Instruction> parseProgram(vector<string> assemblyProgram) {
-    vector<Instruction> program;
-    for (string line : assemblyProgram) {
-        program.push_back(parseInstruction(line));
-    }
-    return program;
-// this is to convert a list of text instructions (assemblyProgram) into a list of Instruction objects that the CPU can execute.
-// Each line of text is parsed into an Instruction using the parseInstruction function, and then added to the program vector.
-}
-*/
-
-
 //====================================( SCAN LABELS )===================================================
 vector<string> scanLabels(vector<string> rawLines, map<string, int>& labelMap) {
     vector<string> cleanedLines;
@@ -360,6 +356,16 @@ public:
         }
     }
 
+    // MOV instruction:
+    // Copies the value from one register to another.
+    void mov(int dest, int src) {
+        if (isValidRegister(dest) && isValidRegister(src)) {
+            registers[dest] = registers[src];
+        } else {
+            cout << "Invalid register used in MOV instruction" << endl;
+        }
+    }
+
 //===================================( RUN PROGRAM )===================================================
     void runProgram(vector<Instruction> program) {
     bool running = true;
@@ -372,8 +378,10 @@ public:
         cout << "PC = " << programCounter
              << " | Executing: " << currentInstruction.operation << endl;
         instructionsExecuted++;
+
 //===================================( CYCLE COUNTING )===================================================
-        if (currentInstruction.operation == "LOAD" || currentInstruction.operation == "STORE") {
+        
+if (currentInstruction.operation == "LOAD" || currentInstruction.operation == "STORE") {
             cycleCount += 2; // Memory operations take more cycles
         } else if (currentInstruction.operation == "JMP" || currentInstruction.operation == "BEQ" || currentInstruction.operation == "BNE") {
             cycleCount += 3; // Branch instructions are slower due to potential pipeline flushes in real CPUs
@@ -384,6 +392,7 @@ public:
             DECODE + EXECUTE---> Look at the operation name and call the correct CPU function
         */
 //===================================( INSTRUCTION EXECUTION COUNT)===================================================
+        
         if (currentInstruction.operation == "LOAD") {
             //Instruction("LOAD", register, value, unused)
             load(currentInstruction.arg1, currentInstruction.arg2);
@@ -413,6 +422,11 @@ public:
             // Instruction("STORE", register, memoryAddress, unused)
             store(currentInstruction.arg1, currentInstruction.arg2);
             memoryOperations++;
+
+        } else if (currentInstruction.operation == "MOV") {
+            // Instruction("MOV", destinationRegister, sourceRegister, unused)
+            mov(currentInstruction.arg1, currentInstruction.arg2);
+            aluOperations++;
 
         } else if (currentInstruction.operation == "JMP") {
             // Instruction("JMP", targetAddress, unused, unused)
