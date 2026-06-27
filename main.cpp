@@ -114,6 +114,16 @@ Instruction parseInstruction(string line) { // Converts one assembly-style text 
         return Instruction("JMP", targetAddress, 0, 0);
     }
 //=================================( NEW CONDITIONAL INSTRUCTIONS )===================================================
+    
+    else if (operation == "CMP") {
+        string destText, src1Text, src2Text;
+        ss >> destText >> src1Text >> src2Text;
+        int dest = parseRegister(destText);
+        int src1 = parseRegister(src1Text);
+        int src2 = parseRegister(src2Text);
+        return Instruction("CMP", dest, src1, src2);
+    }
+
     else if (operation == "BEQ") {
         string reg1Text, reg2Text;
         int targetAddress;
@@ -385,6 +395,20 @@ public:
         }
     }
 
+    void cmp(int dest, int src1, int src2) {
+        if (isValidRegister(dest) && isValidRegister(src1) && isValidRegister(src2)) {
+            if (registers[src1] == registers[src2]) {
+                registers[dest] = 0; // Equal
+            } else if (registers[src1] < registers[src2]) {
+                registers[dest] = -1; // Less than
+            } else {
+                registers[dest] = 1; // Greater than
+            }
+        } else {
+            cout << "Invalid register used in CMP instruction" << endl;
+        }
+    }
+
 //===================================( RUN PROGRAM )===================================================
     void runProgram(vector<Instruction> program) {
     bool running = true;
@@ -463,6 +487,11 @@ if (currentInstruction.operation == "LOAD" ||
             programCounter = currentInstruction.arg1; // Sets the program counter to the target address to jump to that instruction.
             continue; // Skip the normal PC increment since we already set it to the jump target (standard behavior for a jump instruction)
 
+        } else if (currentInstruction.operation == "CMP") {
+            // Instruction("CMP", destinationRegister, sourceRegister1, sourceRegister2)
+            cmp(currentInstruction.arg1, currentInstruction.arg2, currentInstruction.arg3);
+            aluOperations++;
+    
         } else if (currentInstruction.operation == "BEQ") {
             // Instruction("BEQ", register1, register2, targetAddress)
             branchInstructions++;
@@ -547,7 +576,7 @@ int main() {
     cout << endl;
 
 //====================================( NEW PROGRAM LOADED FROM FILE )===================================================
-    vector<string> assemblyProgram = loadProgramFromFile("programs/memory_test.asm"); // Load the program
+    vector<string> assemblyProgram = loadProgramFromFile("programs/cmp_test.asm"); // Load the program
     vector<Instruction> program = parseProgram(assemblyProgram); // Now parse the loaded program into Instruction objects
     
     cpu.runProgram(program); //CPU will fetch, decode, and execute each instruction until it hits HALT
@@ -556,10 +585,11 @@ int main() {
     cpu.printRegisters(); ///prints the final values of all registers after the program finishes running
     cpu.printMemory(100);
     cpu.printMemory(101);
+    cpu.printMemory(102);
     cpu.printPerformanceReport(); //prints the performance metrics collected during execution, such as total instructions executed, cycle count, ALU operations, memory operations, branch instructions, and branches taken.
 
     map<string, int> labelMap;
-    vector<string> rawLines = loadProgramFromFile("programs/memory_test.asm");
+    vector<string> rawLines = loadProgramFromFile("programs/cmp_test.asm");
     vector<string> cleaned = scanLabels(rawLines, labelMap);
 
     cout << "Label map contents:" << endl;
